@@ -1,13 +1,14 @@
 
 import './App.css'
-import Login from './UIcomponent/Authentication/Login'
+import AppRouter from './Routers/Approuter'
+
 
 function App() {
 
   return (
     <>
-    <Login/>
-    </>
+   <AppRouter />
+   </>
   )
 }
 
