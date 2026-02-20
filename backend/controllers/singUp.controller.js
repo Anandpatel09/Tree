@@ -10,8 +10,10 @@ const signUp = async(req,res)=>{
 
     const sql="INSERT INTO users(full_name,email,password) VALUES(?,?,?)"
     db.query(sql,[full_name,email,hashed],(err)=>{
-        if(err) res.status(500).json(err);   
-        res.json({message:"user created successfully"})
+        if(err) {
+           return res.status(500).json(err);
+        }   
+        return res.json({message:"user created successfully"})
     })
 }
 
