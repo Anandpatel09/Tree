@@ -1,6 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-
+import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -17,14 +15,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
-
+import toast from "react-hot-toast";
+import { resetpasswordapi } from "@/api";
 
 // 🔐 Validation Schema
 const formSchema = z
   .object({
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z
       .string()
       .min(6, "Confirm password must be at least 6 characters"),
@@ -36,9 +33,8 @@ const formSchema = z
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function ResetPassword() {
+const ResetPassword = () => {
   const { token } = useParams();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const form = useForm<FormValues>({
@@ -49,21 +45,23 @@ export default function ResetPassword() {
     },
   });
 
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
+    if (!token) return;
+
     try {
       setLoading(true);
 
-      await axios.post(
-        `http://localhost:5000/api/auth/reset-password/${token}`,
-        {
-          password: values.password, // only send password
-        }
-      );
+      const payload = {
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+      };
 
-      alert("Password updated successfully");
-      navigate("/login");
+      await resetpasswordapi(token, payload);
+
+      toast.success("Password reset successful!");
     } catch (error) {
-      alert("Invalid or expired token");
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -78,10 +76,7 @@ export default function ResetPassword() {
 
         <CardContent>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               {/* Password */}
               <FormField
                 control={form.control}
@@ -129,4 +124,5 @@ export default function ResetPassword() {
       </Card>
     </div>
   );
-}
+};
+export default ResetPassword;

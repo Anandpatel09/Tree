@@ -1,3 +1,4 @@
+import { forgetpasswordapi } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -10,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import z from "zod";
 
 const formSchema = z.object({
@@ -20,7 +20,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const Forgetpassword = () => {
-  const navigate = useNavigate();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -28,9 +27,13 @@ const Forgetpassword = () => {
     },
   });
 
-  const onSubmit = () => {};
-
-  const handleSendResetLink = () => {};
+  const onSubmit = async(data:FormValues) => {
+    const payload={
+      email:data.email,
+    }
+    await forgetpasswordapi(payload)
+  
+  };
 
   return (
     <>
@@ -63,7 +66,7 @@ const Forgetpassword = () => {
                 <Button
                   type="submit"
                   className="w-full"
-                  onClick={handleSendResetLink}
+                  
                 >
                   Send Reset Link
                 </Button>

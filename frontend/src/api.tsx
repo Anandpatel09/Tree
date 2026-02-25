@@ -11,6 +11,17 @@ export interface Logindata {
   password: string;
 }
 
+//forget password
+export interface Forgetpasswordinterface{
+email:string;
+}
+
+interface resetpasswordpayload{
+  password:string;
+  confirmPassword:string;
+}
+
+
 const BaseUrl = axios.create({
   baseURL: "http://localhost:5000",
 });
@@ -23,4 +34,17 @@ export const signupapi = (formData: FormData) => {
 //login
 export const loginapi = (payload: Logindata) => {
   return BaseUrl.post("/auth/login", payload);
+};
+
+///forget password
+export const forgetpasswordapi=(payload:Forgetpasswordinterface)=>{
+  return BaseUrl.post("/auth/forgot-password",payload)
+}
+
+//reset password
+export const resetpasswordapi = (
+  token: string,
+  payload: resetpasswordpayload
+) => {
+  return BaseUrl.post(`/auth/reset-password/${token}`, payload);
 };
