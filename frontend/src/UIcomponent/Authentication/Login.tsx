@@ -43,6 +43,8 @@ const Login = () => {
 
       if(result.status === 200){
         toast.success(result?.data?.message)
+        navigate(ROUTES.HOME)
+
       }
 
      }catch(err:any){
