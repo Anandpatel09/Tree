@@ -26,6 +26,7 @@ const login = async (req, res) => {
     }
 
     const user = rows[0];
+    console.log(rows.length, "knencecncocndqndojendejdnejdnce2do==========")
 
     //  Verify password
     const match = await bcrypt.compare(password, user.password);

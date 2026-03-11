@@ -5,7 +5,7 @@ const signUp = async (req, res) => {
   const { full_name, email, password, phone, dob, gender } = req.body;
 
   try {
-    // ✅ VALIDATION: Check if all required fields are present
+    //  VALIDATION: Check if all required fields are present
     if (!full_name || !email || !password || !phone) {
       return res.status(400).json({
         success: false,
@@ -13,7 +13,7 @@ const signUp = async (req, res) => {
       });
     }
 
-    // ✅ CHECK IF EMAIL ALREADY EXISTS (BEFORE HASHING)
+    //  CHECK IF EMAIL ALREADY EXISTS (BEFORE HASHING)
     const [existingUsers] = await db.execute(
       "SELECT email FROM users WHERE email = ?",
       [email]
@@ -26,13 +26,13 @@ const signUp = async (req, res) => {
       });
     }
 
-    // ✅ Hash password
+    // Hash password
     const hashed = await bcrypt.hash(password, 10);
 
-    // ✅ Get profile picture if uploaded
+    // Get profile picture if uploaded
     const profile_pic = req.file ? req.file.filename : null;
 
-    // ✅ INSERT NEW USER with proper SQL
+    // INSERT NEW USER with proper SQL
     const sql = `
       INSERT INTO users 
       (full_name, email, password, phone, profile_pic, dob, gender) 
@@ -40,7 +40,6 @@ const signUp = async (req, res) => {
     `;
 
     await db.execute(sql, [full_name, email, hashed, phone, profile_pic, dob, gender]);
-
     return res.status(201).json({
       success: true,
       message: "User created successfully",
@@ -50,6 +49,7 @@ const signUp = async (req, res) => {
 
     // Handle specific MySQL errors
     if (err.code === "ER_DUP_ENTRY") {
+      
       return res.status(409).json({
         success: false,
         message: "Email already registered",
