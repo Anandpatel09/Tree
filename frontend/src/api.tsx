@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { FormValues } from "./UIcomponent/AddUser/Addmembers";
 //signup interface
 export interface SignupResponse {
   success: boolean;
@@ -48,3 +49,10 @@ export const resetpasswordapi = (
 ) => {
   return BaseUrl.post(`/auth/reset-password/${token}`, payload);
 };
+
+
+//add members
+export const addUsers=(payload : FormValues)=>{
+  return BaseUrl.post("/auth/add-members",payload)
+}
+

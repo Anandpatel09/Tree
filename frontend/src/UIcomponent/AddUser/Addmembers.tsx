@@ -6,17 +6,48 @@ import {
   FormField,
   FormItem,
   FormLabel,
-
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
+import { Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { addUsers } from "@/api";
+import toast from "react-hot-toast";
+
+/* -------------------- TYPES -------------------- */
+
+interface Child  {
+  child_name: string;
+  child_gender: string;
+};
+
+export interface FormValues  {
+  fullName: string;
+  wifename:string;
+  dob: string;
+  gender: string;
+  father: string;
+  mother: string;
+  grandfather: string;
+  grandmother: string;
+  village: string;
+  address: string;
+  phone: string;
+  file: File | null;
+  children: Child[];
+};
+
+/* -------------------- COMPONENT -------------------- */
 
 const AddMembers = () => {
-  const form = useForm({
+  const [child, setChild] = useState(false);
+
+  const form = useForm<FormValues>({
     defaultValues: {
       fullName: "",
+      wifename:"",
       dob: "",
       gender: "",
       father: "",
@@ -26,11 +57,55 @@ const AddMembers = () => {
       village: "",
       address: "",
       phone: "",
+      file: null,
+      children: [],
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "children",
+  });
+
+  const onSubmit = async (data: FormValues) => {
+  
+    const payload:FormValues={
+       fullName: data.fullName,
+      wifename:data.wifename,
+      dob: data.dob,
+      gender: data.gender,
+      father: data.father,
+      mother: data.mother,
+      grandfather: data.grandfather,
+      grandmother: data.grandmother,
+      village: data.village,
+      address: data.address,
+      phone: data.phone,
+      file: data.file,
+      children: [
+  {
+    child_name: data.children[0].child_name,
+    child_gender: data.children[0].child_gender,
+  }
+],}
+try{
+const result = await addUsers(payload);
+console.log("result=========",result)
+if(result.status===200){
+  toast.success("Member Added successfully...")
+}
+
+}catch(err:any){
+ toast.error(err?.response?.data?.message)
+}
+
+
+
+  };
+
+  const handleAddChildren = () => {
+    setChild(true);
+    append({ child_name: "", child_gender: "" });
   };
 
   return (
@@ -60,6 +135,20 @@ const AddMembers = () => {
                 )}
               />
 
+               {/* spouse Name */}
+              <FormField
+                control={form.control}
+                name="wifename"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Wife Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
               {/* DOB + Gender */}
               <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -81,8 +170,10 @@ const AddMembers = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Gender</FormLabel>
+
                       <RadioGroup
                         onValueChange={field.onChange}
+                        value={field.value}
                         className="flex gap-6 mt-2"
                       >
                         <div className="flex items-center gap-2">
@@ -95,82 +186,160 @@ const AddMembers = () => {
                           <Label>Female</Label>
                         </div>
                       </RadioGroup>
+
                     </FormItem>
                   )}
                 />
               </div>
 
-              {/* Family Fields */}
+              {/* Family Section */}
               <div className="grid grid-cols-2 gap-4">
-                 <FormField
-                control={form.control}
-                name="father"
-                render={({ field }) => (
-                  <FormItem>
-                    {/* <FormLabel>Father Name</FormLabel> */}
-                    <FormControl>
-                      <Input {...field}  placeholder="Father Name"/>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+                  <div className="col-span-2 space-y-3">
+                    {fields.map((item, index) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center gap-2"
+                      >
+                        {/* Child Name */}
+                        <FormField
+                          control={form.control}
+                          name={`children.${index}.child_name`}
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  placeholder="Child Name"
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
 
+                        {/* Child Gender */}
+                        <FormField
+                          control={form.control}
+                          name={`children.${index}.child_gender`}
+                          render={({ field }) => (
+                            <FormItem className="w-32">
+                              <FormControl>
+                                <select
+                                  {...field}
+                                  className="border rounded-md p-2 w-full"
+                                >
+                                  <option value="">Gender</option>
+                                  <option value="male">Male</option>
+                                  <option value="female">Female</option>
+                                </select>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* Remove Child */}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => remove(index)}
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </div>
+                    ))}
+
+                    {/* Add More Child */}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() =>
+                        append({ child_name: "", child_gender: "" })
+                      }
+                    className="flex items-center gap-2 w-fit"
+                    >
+                      <Plus size={16} />
+                      Add Child
+                    </Button>
+                  </div>
+                
+
+                {/* Father */}
                 <FormField
-                control={form.control}
-                name="mother"
-                render={({ field }) => (
-                  <FormItem>
-                    {/* <FormLabel>Father Name</FormLabel> */}
-                    <FormControl>
-                      <Input {...field}  placeholder="Mother Name"/>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+                  control={form.control}
+                  name="father"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Father Name"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="grandfather"
-                render={({ field }) => (
-                  <FormItem>
-                    {/* <FormLabel>Father Name</FormLabel> */}
-                    <FormControl>
-                      <Input {...field}  placeholder="Grand Father"/>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+                {/* Mother */}
+                <FormField
+                  control={form.control}
+                  name="mother"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Mother Name"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
 
-               <FormField
-                control={form.control}
-                name="grandmother"
-                render={({ field }) => (
-                  <FormItem>
-                    {/* <FormLabel>Father Name</FormLabel> */}
-                    <FormControl>
-                      <Input {...field}  placeholder="Grand Mother"/>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-               
+                {/* Grandfather */}
+                <FormField
+                  control={form.control}
+                  name="grandfather"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Grand Father"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                {/* Grandmother */}
+                <FormField
+                  control={form.control}
+                  name="grandmother"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Grand Mother"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
               </div>
 
               {/* Village */}
-              
-               <FormField
+              <FormField
                 control={form.control}
                 name="village"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel>Father Name</FormLabel> */}
                     <FormControl>
-                      <Input {...field}  placeholder="Village"/>
+                      <Input {...field} placeholder="Village" />
                     </FormControl>
                   </FormItem>
                 )}
               />
-              
 
               {/* Address */}
               <FormField
@@ -178,56 +347,64 @@ const AddMembers = () => {
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel>Father Name</FormLabel> */}
                     <FormControl>
-                      <Input {...field}  placeholder="Address"/>
+                      <Input {...field} placeholder="Address" />
                     </FormControl>
                   </FormItem>
                 )}
               />
-            
-             <div className="grid grid-cols-2 gap-4">
-              {/* Phone */}
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    {/* <FormLabel>Father Name</FormLabel> */}
-                    <FormControl>
-                      <Input {...field}  placeholder="Phone Number"/>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            
-             
 
-              {/* File Upload */}
-              <div>
-                 <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Upload File</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="file"  />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-                {/* <Label>Upload File</Label>
-                <Input type="file" className="mt-2" /> */}
+              {/* Phone + File */}
+              <div className="grid grid-cols-2 gap-4">
+
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Phone Number"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="file"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Upload File</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.files?.[0] || null
+                            )
+                          }
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
               </div>
-              </div>
+
               {/* Buttons */}
               <div className="flex justify-end gap-3">
                 <Button type="button" variant="secondary">
                   Cancel
                 </Button>
-                <Button type="submit">Add Member</Button>
+
+                <Button type="submit">
+                  Add Member
+                </Button>
               </div>
+
             </form>
           </Form>
         </CardContent>
