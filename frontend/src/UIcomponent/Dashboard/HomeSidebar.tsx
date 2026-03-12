@@ -33,7 +33,7 @@ const HomeSidebar = ({ open, setOpen }: SidebarProps) => {
           </NavLink>
 
           <NavLink
-            to="/home/add-members"
+            to="/add-members"
             onClick={() => setOpen(false)}
             className="flex items-center gap-3 p-2 rounded hover:bg-blue-500"
           >
