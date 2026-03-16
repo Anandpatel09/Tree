@@ -99,10 +99,10 @@ if(result.status===200){
 
   };
 
-  const handleAddChildren = () => {
-    // setChild(true);
-    append({ child_name: "", child_gender: "" });
-  };
+  // const handleAddChildren = () => {
+  //   setChild(true);
+  //   append({ child_name: "", child_gender: "" });
+  // };
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center p-8">
