@@ -132,6 +132,7 @@ const AddMembers = () => {
   const usenav = useNavigate();
   const handlenavigation = () => {
     usenav("/home");
+    setClose(false);
   }
 
 
