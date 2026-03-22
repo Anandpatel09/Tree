@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { LayoutDashboard, Menu, Search, Settings, User, UserPlus, Users } from "lucide-react";
+import {  Menu, Search, Settings, User, Users } from "lucide-react";
 import {
   Avatar,
   AvatarImage,
