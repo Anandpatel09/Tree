@@ -1,6 +1,6 @@
 
 const db = require("../config/db");
-
+// import db from "../config/db.js";
 // Find user by email
 const findByEmail = async (email) => {
   try {
@@ -73,6 +73,9 @@ const emailExists = async (email) => {
     throw error;
   }
 };
+
+
+
 
 module.exports = {
   findByEmail,
