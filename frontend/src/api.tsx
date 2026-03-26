@@ -41,7 +41,7 @@ const BaseUrl = axios.create({
   baseURL: "http://localhost:5000",
 });
 
-// ✅ INTERCEPTOR
+//INTERCEPTOR
 BaseUrl.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
@@ -78,7 +78,13 @@ export const resetpasswordapi = (
 
 //profile
 export const getProfileApi = () => {
-  return BaseUrl.get("/auth/profile");
+  const token=localStorage.getItem("token")
+  console.log("token bearer ==== ======" , token)
+  return BaseUrl.get("/auth/get-profile",{
+    headers:{
+      Authorization:`Bearer ${token}`,
+    }
+  });
 };
 
 //add members
@@ -87,50 +93,4 @@ export const addUsers = (payload: FormValues) => {
 };
 
 
-// import axios from "axios";
-// import type { FormValues } from "./UIcomponent/BasicsUi/Addmembers";
-// //signup interface
-// export interface SignupResponse {
-//   success: boolean;
-//   message: string;
-// }
-
-// //login interface
-// export interface Logindata {
-//   email: string;
-//   password: string;
-// }
-
-
-
-// interface resetpasswordpayload{
-//   password:string;
-//   confirmPassword:string;
-// }
-
-
-// const BaseUrl = axios.create({
-//   baseURL: "http://localhost:5000",
-// });
-
-// //signup
-// export const signupapi = (formData: FormData) => {
-//   return BaseUrl.post<SignupResponse>("/auth/signup", formData);
-// };
-
-// //login
-// export const loginapi = (payload: Logindata) => {
-//   return BaseUrl.post("/auth/login", payload);
-// };
-
-
-
-
-
-
-// //add members
-// export const addUsers=(payload : FormValues)=>{
-//   return BaseUrl.post("/auth/add-members",payload)
-// }
-
-
+//

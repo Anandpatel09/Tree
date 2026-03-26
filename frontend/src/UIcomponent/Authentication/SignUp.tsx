@@ -69,7 +69,6 @@ const SignUp = () => {
       formData.append("profile_pic", data.profilePic[0]);
     }
       const result = await signupapi(formData);
-      console.log("ffvfvfvfvfev=====",result.status);
       console.log(result.data);
       if(result.status===201){
         // const data: SignupResponse = result.data;

@@ -6,11 +6,38 @@ import {
 } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useState } from "react";
+import { getProfileApi } from "@/api";
 
+interface User {
+  id: number;
+  full_name: string;
+  email: string;
+  phone: string;
+  profile_pic: string | null;
+  dob: string;
+  gender: string;
+  created_at: string;
+};
 
 
 const ProfilePage = () => {
+  // const [profileUser,setProfileUser]=useState<>();
+  const [profileUser, setProfileUser] = useState<User | null>(null);
 
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await getProfileApi();
+        setProfileUser(response?.data)
+      } catch (error) {
+        console.error("error fetching profile", error);
+      }
+    }
+    fetchProfile();
+  }, [])
+  console.log("djcdncudwc ndwucwnchcwocw ccnhwchceohclcicw 0ucocwc========", profileUser)
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -21,16 +48,22 @@ const ProfilePage = () => {
           <CardContent className="flex flex-col md:flex-row items-center gap-6">
 
             <Avatar className="w-24 h-24 ring-4 ring-gray-100">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>AN</AvatarFallback>
+              <AvatarImage src={profileUser?.profile_pic || ""} />
+              <AvatarFallback>
+                {profileUser?.full_name
+                  ?.split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .toUpperCase()}
+              </AvatarFallback>
             </Avatar>
 
             <div className="text-center md:text-left">
               <h2 className="text-2xl font-semibold text-gray-800">
-                Anand Verma
+                {profileUser?.full_name}
               </h2>
               <p className="text-gray-500 text-sm">
-                Village Member
+                Account Holder
               </p>
             </div>
 
@@ -58,10 +91,10 @@ const ProfilePage = () => {
                   Personal Details
                 </h3>
 
-                <p><strong>DOB:</strong> 12 Jan 2000</p>
-                <p><strong>Gender:</strong> Male</p>
-                <p><strong>Phone:</strong> 9876543210</p>
-                <p><strong>Address:</strong> Delhi, India</p>
+                <p><strong>DOB: </strong> {profileUser && new Date(profileUser.dob).toLocaleDateString()}</p>
+                <p><strong>Gender:</strong>{profileUser?.gender} </p>
+                <p><strong>Phone:</strong> {profileUser?.phone}</p>
+                <p><strong>Email:</strong> {profileUser?.email}</p>
 
               </CardContent>
             </Card>
