@@ -1,21 +1,27 @@
 const jwt = require("jsonwebtoken");
- const authMiddleware = (req, res, next) => {
+
+const authMiddleware = (req, res, next) => {
   try {
-    // Get token from headers
-    const token = req.headers.authorization;
+    let token = req.headers.authorization;
+    console.log("tokkkkeeeeennnnniiiizzzzaaaatttiooon",token);
 
     if (!token) {
       return res.status(401).json({ message: "No token provided" });
     }
 
-    // Verify token
-    const decoded = jwt.verify(token, "SECRET_KEY");
+    // ✅ REMOVE "Bearer "
+    if (token.startsWith("Bearer ")) {
+      token = token.split(" ")[1];
+    }
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // const decoded = jwt.verify(token, "SECRET_KEY");
+    console.log("cdchjdb chjdbchdsbchdsbcdhskbcdskhbcdskhbcdshc===",decoded)
 
-    // Save user info in request
     req.user = decoded;
 
-    next(); // go to next controller
+    next();
   } catch (error) {
+    console.log("JWT Error:", error.message); // 🔍 DEBUG
     return res.status(403).json({ message: "Invalid token" });
   }
 };
