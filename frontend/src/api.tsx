@@ -79,7 +79,6 @@ export const resetpasswordapi = (
 //profile
 export const getProfileApi = () => {
   const token=localStorage.getItem("token")
-  console.log("token bearer ==== ======" , token)
   return BaseUrl.get("/auth/get-profile",{
     headers:{
       Authorization:`Bearer ${token}`,
@@ -93,4 +92,3 @@ export const addUsers = (payload: FormValues) => {
 };
 
 
-//
