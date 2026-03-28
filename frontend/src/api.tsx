@@ -91,4 +91,11 @@ export const addUsers = (payload: FormValues) => {
   return BaseUrl.post("/members/add", payload);
 };
 
-
+// update profile
+export const updateUser = (id: number, payload: any) => {
+  return BaseUrl.patch(`/auth/profile/${id}`, payload, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};

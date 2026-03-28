@@ -28,6 +28,7 @@ const ProfilePage = () => {
   const [profileUser, setProfileUser] = useState<User | null>(null);
 
 
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -65,8 +66,10 @@ const ProfilePage = () => {
               </p>
             </div>
             <Button
-            onClick={()=>setEditProfileUser(true)}
-            className="ml-auto rounded-lg px-5">
+              onClick={() => setEditProfileUser(true)}
+              disabled={!profileUser}
+              className="ml-auto rounded-lg px-5"
+            >
               Edit Profile
             </Button>
           </CardContent>
@@ -95,8 +98,13 @@ const ProfilePage = () => {
 
 
 {/* //Edit profile */}
-<EditProfile  editProfile={editProfile} setEditProfileUser={setEditProfileUser}/>
-
+{profileUser && (
+  <EditProfile
+    editProfile={editProfile}
+    setEditProfileUser={setEditProfileUser}
+    id={profileUser.id}
+  />
+)}
 
       </div>
     </div>

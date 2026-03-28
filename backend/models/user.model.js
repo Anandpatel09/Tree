@@ -1,6 +1,5 @@
 
 const db = require("../config/db");
-// import db from "../config/db.js";
 // Find user by email
 const findByEmail = async (email) => {
   try {
