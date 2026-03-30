@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const authMiddleware = (req, res, next) => {
   try {
     let token = req.headers.authorization;
-    console.log("tokkkkeeeeennnnniiiizzzzaaaatttiooon",token);
 
     if (!token) {
       return res.status(401).json({ message: "No token provided" });
@@ -14,8 +13,6 @@ const authMiddleware = (req, res, next) => {
       token = token.split(" ")[1];
     }
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // const decoded = jwt.verify(token, "SECRET_KEY");
-    console.log("cdchjdb chjdbchdsbchdsbcdhskbcdskhbcdskhbcdshc===",decoded)
 
     req.user = decoded;
 
@@ -25,5 +22,4 @@ const authMiddleware = (req, res, next) => {
     return res.status(403).json({ message: "Invalid token" });
   }
 };
-
 module.exports = authMiddleware;
