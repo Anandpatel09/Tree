@@ -126,3 +126,14 @@ export const familyData=()=>{
     }
   })
 }
+
+//get users detail 
+
+export const membersDetail=()=>{
+  const token =localStorage.getItem("token")
+  return BaseUrl.get('/auth/members',{
+    headers:{
+      Authorization:`Bearer ${token}`,
+    }
+  })
+}
