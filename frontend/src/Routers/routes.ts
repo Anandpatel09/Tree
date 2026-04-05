@@ -2,6 +2,7 @@ const HOME = "/home";
 const LOGIN= "/";
 const PROFILE="/profile/user"
 const SETTING="/profile/setting"
+const ALL_MEMBERS=`${HOME}/members`
 
 
 export const ROUTES = {
@@ -15,4 +16,5 @@ export const ROUTES = {
   ADD_MEMBERS: "/add-members",
   PROFILE,
   SETTING,
+  ALL_MEMBERS,
 };

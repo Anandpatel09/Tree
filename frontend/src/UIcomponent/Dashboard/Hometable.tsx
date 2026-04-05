@@ -13,6 +13,9 @@ import {
 import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/Routers/routes";
+
 
 // ✅ Type
 interface Member {
@@ -26,7 +29,7 @@ interface Member {
 
 const Hometable = () => {
   const [members, setMembers] = useState<Member[]>([]);
-
+  const navigate = useNavigate();
   // ✅ Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -43,6 +46,12 @@ const Hometable = () => {
 
     getmembersData();
   }, []);
+
+
+
+
+
+
 
   // ✅ Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -92,9 +101,15 @@ const Hometable = () => {
                 </TableCell>
 
                 <TableCell>
-                  <Button variant="outline">
-                    
-                     <Eye />
+                  <Button variant="outline"
+                    onClick={() =>
+                      navigate(ROUTES.ALL_MEMBERS, {
+                        state: { member:  members},
+                      })
+                    }
+                  >
+
+                    <Eye />
                     View</Button>
                 </TableCell>
               </TableRow>
@@ -139,7 +154,7 @@ const Hometable = () => {
             >
               {page}
             </Button>
-            
+
           )
         )}
 
