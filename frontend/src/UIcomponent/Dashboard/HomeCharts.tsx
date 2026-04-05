@@ -26,30 +26,30 @@ const DashboardChart = ({
     { name: "New Members", value: newThisMonth },
   ];
 
-  // 🎨 Colors for each bar
-  const colors = ["#3b82f6", "#10b981", "#f59e0b"]; 
+  //  Colors for each bar
+  const colors = ["#3b82f6", "#10b981", "#f59e0b"];
   // blue, green, yellow
 
   return (
     <div className="w-full h-[350px] bg-white p-6 rounded-2xl shadow-md border">
-      <h2 className="text-xl font-semibold mb-4">
-        Dashboard Overview
-      </h2>
+      <h2 className="text-xl font-semibold mb-4">Dashboard Overview</h2>
 
-      <ResponsiveContainer width="100%" height="85%">
+      <ResponsiveContainer width="40%" height="85%">
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
-          
+
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
 
           <Bar dataKey="value" radius={[8, 8, 0, 0]}>
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={colors[index]} />
+            {data?.map((_, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={colors[index % colors.length]}
+              />
             ))}
           </Bar>
-
         </BarChart>
       </ResponsiveContainer>
     </div>
