@@ -1,10 +1,11 @@
 
-
 import { useEffect, useState } from "react";
 import HomeCards from "./HomeCards";
 import HomeNavbar from "./HomeNavbar";
-import Hometable from "./Hometable";
+import 
+Hometable from "./Hometable";
 import { familyData } from "@/api";
+import DashboardChart from "./HomeCharts";
 
 export interface FamilyData{
   
@@ -24,9 +25,10 @@ const datado=async()=>{
 }
 datado();
 },[])
-
-  console.log("nv sv v v f vfv fv===========",famData)
-
+  // ✅ Safe destructuring
+  const totalFamilies = famData?.totalFamilies ?? 0;
+  const totalMembers = famData?.totalMembers ?? 0;
+  const newThisMonth = famData?.newThisMonth ?? 0;
   return (
     <div className="min-h-screen flex flex-col">
       <HomeNavbar />
@@ -34,6 +36,7 @@ datado();
       <h1 className="font-bold text-2xl">Welcome to the village Directory </h1>
         
       </main>
+      <DashboardChart totalFamilies={totalFamilies} totalMembers={totalMembers} newThisMonth={newThisMonth}/>
       {famData && <HomeCards familyData={famData}/>}
       <Hometable/>
     </div>

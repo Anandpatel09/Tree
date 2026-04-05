@@ -12,6 +12,7 @@ const authMiddleware = require("../middleware/middleware");
 const updateprofile = require("../controllers/updateprofile.controller");
 const { changePassword } = require("../controllers/Changepassword.controller");
 const { getDashboardStats } = require("../controllers/Dashboard.controller");
+const getAllMembers = require("../controllers/UserDetail.controller");
 const upload = multer({ dest: "uploads/" });
 
 router.post("/signup", upload.single("profile_pic"), signUp);
@@ -27,6 +28,7 @@ router.get("/get-profile", authMiddleware, getProfile);
 router.patch("/profile/:id",updateprofile)
 router.put("/update-password/",authMiddleware,changePassword)
 router.get("/dasboard",authMiddleware,getDashboardStats)
+router.get("/members",getAllMembers)
 
 
 module.exports=router
