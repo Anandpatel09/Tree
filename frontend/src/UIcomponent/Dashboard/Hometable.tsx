@@ -1,4 +1,4 @@
-import { membersDetail } from "@/api";
+import { deleteMember, membersDetail } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -47,11 +47,23 @@ const Hometable = () => {
     getmembersData();
   }, []);
 
+  // delete perticular user
+  const handleDelete = async (id: number) => {
+    try {
+      // confirm before delete
+      const confirmDelete = window.confirm("Are you sure you want to delete this member?");
+      if (!confirmDelete) return;
 
+      await deleteMember(id);
 
+      // ✅ Update UI instantly (important)
+      setMembers((prev) => prev.filter((member) => member.id !== id));
 
-
-
+      toast.success("Member deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete member");
+    }
+  };
 
   // ✅ Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -101,16 +113,27 @@ const Hometable = () => {
                 </TableCell>
 
                 <TableCell>
-                  <Button variant="outline"
+                  <Button
+                    variant="outline"
                     onClick={() =>
                       navigate(ROUTES.ALL_MEMBERS, {
-                        state: { member:  members},
+                        state: {
+                          member: item,
+                        },
                       })
                     }
                   >
-
                     <Eye />
-                    View</Button>
+                    View
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="text-red-500 border-red-200 hover:bg-red-50"
+                    onClick={() => handleDelete(item.id)}
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+
                 </TableCell>
               </TableRow>
             ))

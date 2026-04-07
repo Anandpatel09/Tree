@@ -137,3 +137,15 @@ export const membersDetail=()=>{
     }
   })
 }
+
+
+// delete user 
+
+export const deleteMember = (id: number) => {
+    const token =localStorage.getItem("token")
+  return BaseUrl.delete(`/auth/member/${id}`,{
+    headers:{
+      Authorization:`Bearer ${token}`,
+    }
+    });
+};

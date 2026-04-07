@@ -448,7 +448,7 @@ const AddMembers = () => {
                   <div className="flex justify-end gap-3">
                     <Button type="button" variant="secondary"
                       onClick={handlenavigation} >
-                      Cancel
+                     Close
                     </Button>
 
                     <Button type="submit">
