@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -46,11 +46,6 @@ const Hometable = () => {
 
     getmembersData();
   }, []);
-
-
-
-
-
 
 
   // ✅ Pagination logic
@@ -101,16 +96,25 @@ const Hometable = () => {
                 </TableCell>
 
                 <TableCell>
-                  <Button variant="outline"
+                  <Button
+                    variant="outline"
                     onClick={() =>
                       navigate(ROUTES.ALL_MEMBERS, {
-                        state: { member:  members},
+                        state: {
+                          member: item,
+                        },
                       })
                     }
                   >
-
                     <Eye />
-                    View</Button>
+                    View
+                  </Button>
+                  <Button  variant="outline" className="mx-2" 
+                  // onClick={""}
+                  >
+                    <Trash2/>
+                  </Button>
+
                 </TableCell>
               </TableRow>
             ))
