@@ -13,6 +13,7 @@ const updateprofile = require("../controllers/updateprofile.controller");
 const { changePassword } = require("../controllers/Changepassword.controller");
 const { getDashboardStats } = require("../controllers/Dashboard.controller");
 const getAllMembers = require("../controllers/UserDetail.controller");
+const { deleteMember } = require("../controllers/Deletemember.controller");
 const upload = multer({ dest: "uploads/" });
 
 router.post("/signup", upload.single("profile_pic"), signUp);
@@ -30,5 +31,7 @@ router.put("/update-password/",authMiddleware,changePassword)
 router.get("/dasboard",authMiddleware,getDashboardStats)
 router.get("/members",getAllMembers)
 
+//delete member
+router.delete("/member/:id",deleteMember)
 
 module.exports=router
