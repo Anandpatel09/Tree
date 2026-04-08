@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { LayoutDashboard, UserPlus, Search, LogOut } from "lucide-react";
+import { LayoutDashboard, UserPlus,  LogOut } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { ROUTES } from "@/Routers/routes";
 
