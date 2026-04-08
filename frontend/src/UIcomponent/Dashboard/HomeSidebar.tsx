@@ -25,7 +25,7 @@ const HomeSidebar = ({ open, setOpen }: SidebarProps) => {
         {/* MENU */}
         <nav className="flex flex-col gap-2 p-4">
           <NavLink
-            to="/dashboard"
+            to="/home"
             onClick={() => setOpen(false)}
             className="flex items-center gap-3 p-2 rounded hover:bg-blue-500"
           >
@@ -42,14 +42,14 @@ const HomeSidebar = ({ open, setOpen }: SidebarProps) => {
             Add Member
           </NavLink>
 
-          <NavLink
+          {/* <NavLink
             to="/search"
             onClick={() => setOpen(false)}
             className="flex items-center gap-3 p-2 rounded hover:bg-blue-500"
           >
             <Search size={16} />
             Search
-          </NavLink>
+          </NavLink> */}
         </nav>
         <Separator />
 

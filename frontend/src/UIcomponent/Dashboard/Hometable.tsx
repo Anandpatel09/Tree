@@ -16,24 +16,35 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/Routers/routes";
 
+const resolveImageUrl = (value?: string | null) =>
+  value
+    ? value.startsWith("http")
+      ? value
+      : `http://localhost:5000/uploads/${value}`
+    : "";
 
-// ✅ Type
 interface Member {
   id: number;
   fullName: string;
   phone: string;
   village: string;
-  file: string;
+  file?: string | null;
   created_at: string;
+  profile_pic?: string | null;
 }
 
 const Hometable = () => {
   const [members, setMembers] = useState<Member[]>([]);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
   const navigate = useNavigate();
-  // ✅ Pagination state
+
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  //  Fetch members
   useEffect(() => {
     const getmembersData = async () => {
       try {
@@ -47,17 +58,42 @@ const Hometable = () => {
     getmembersData();
   }, []);
 
-  // delete perticular user
+  //  Debounce logic (500ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setCurrentPage(1); // reset page
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  //  Filter logic
+  const filteredMembers = members.filter((item) =>
+    item.fullName.toLowerCase().includes(debouncedSearch.toLowerCase())
+  );
+
+  //  Pagination logic on filtered data
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentMembers = filteredMembers.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
+
+  //  Delete logic
   const handleDelete = async (id: number) => {
     try {
-      // confirm before delete
-      const confirmDelete = window.confirm("Are you sure you want to delete this member?");
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete this member?"
+      );
       if (!confirmDelete) return;
 
       await deleteMember(id);
 
-      // ✅ Update UI instantly (important)
-      setMembers((prev) => prev.filter((member) => member.id !== id));
+      setMembers((prev) => prev.filter((m) => m.id !== id));
 
       toast.success("Member deleted successfully");
     } catch (error) {
@@ -65,21 +101,23 @@ const Hometable = () => {
     }
   };
 
-  // ✅ Pagination logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-  const currentMembers = members.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-
-  const totalPages = Math.ceil(members.length / itemsPerPage);
-
   return (
     <div className="p-6">
+      {/*  Search Input */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search by name..."
+          className="border p-2 rounded w-full"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
       <Table>
-        <TableCaption className="caption-top mb-1 ">Members List</TableCaption>
+        <TableCaption className="caption-top mb-1">
+          Members List
+        </TableCaption>
 
         <TableHeader>
           <TableRow>
@@ -98,9 +136,15 @@ const Hometable = () => {
               <TableRow key={item.id}>
                 <TableCell>
                   <img
-                    src={`http://localhost:5000/uploads/${item.file}`}
+                    src={
+                      resolveImageUrl(item.profile_pic || item.file) ||
+                      "https://dummyimage.com/40x40/cccccc/000000&text=No+Image"
+                    }
                     alt="profile"
                     className="w-10 h-10 rounded-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "https://dummyimage.com/40x40/cccccc/000000&text=No+Image";
+                    }}
                   />
                 </TableCell>
 
@@ -112,20 +156,19 @@ const Hometable = () => {
                   {new Date(item.created_at).toLocaleDateString()}
                 </TableCell>
 
-                <TableCell>
+                <TableCell className="flex gap-2">
                   <Button
                     variant="outline"
                     onClick={() =>
                       navigate(ROUTES.ALL_MEMBERS, {
-                        state: {
-                          member: item,
-                        },
+                        state: { member: item },
                       })
                     }
                   >
                     <Eye />
                     View
                   </Button>
+
                   <Button
                     variant="outline"
                     className="text-red-500 border-red-200 hover:bg-red-50"
@@ -133,7 +176,6 @@ const Hometable = () => {
                   >
                     <Trash2 size={16} />
                   </Button>
-
                 </TableCell>
               </TableRow>
             ))
@@ -150,15 +192,14 @@ const Hometable = () => {
           <TableRow>
             <TableCell colSpan={5}>Total Members</TableCell>
             <TableCell className="text-right">
-              {members.length}
+              {filteredMembers.length}
             </TableCell>
           </TableRow>
         </TableFooter>
       </Table>
 
-      {/* ✅ Pagination UI */}
+      {/* 📄 Pagination */}
       <div className="flex justify-center mt-4 gap-2">
-        {/* Prev */}
         <Button
           variant="outline"
           onClick={() => setCurrentPage((prev) => prev - 1)}
@@ -167,7 +208,6 @@ const Hometable = () => {
           Prev
         </Button>
 
-        {/* Page Numbers */}
         {Array.from({ length: totalPages }, (_, i) => i + 1).map(
           (page) => (
             <Button
@@ -177,12 +217,9 @@ const Hometable = () => {
             >
               {page}
             </Button>
-
           )
         )}
 
-        {/* Next */}
-        <span>....</span>
         <Button
           variant="outline"
           onClick={() => setCurrentPage((prev) => prev + 1)}

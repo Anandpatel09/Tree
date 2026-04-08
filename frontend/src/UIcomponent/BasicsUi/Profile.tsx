@@ -10,6 +10,13 @@ import { useEffect, useState } from "react";
 import { getProfileApi } from "@/api";
 import EditProfile from "./EditProfile";
 
+const resolveImageUrl = (value?: string | null) =>
+  value
+    ? value.startsWith("http")
+      ? value
+      : `http://localhost:5000/uploads/${value}`
+    : "";
+
 
 export interface User {
   id: number;
@@ -48,7 +55,11 @@ const ProfilePage = () => {
         <Card className="p-6 rounded-2xl shadow-sm bg-white">
           <CardContent className="flex flex-col md:flex-row items-center gap-6">
             <Avatar className="w-24 h-24 ring-4 ring-gray-100">
-              <AvatarImage src={profileUser?.profile_pic || ""} />
+              <AvatarImage src={
+                profileUser?.profile_pic
+                  ? resolveImageUrl(profileUser.profile_pic)
+                  : ""
+              } />
               <AvatarFallback>
                 {profileUser?.full_name
                   ?.split(" ")

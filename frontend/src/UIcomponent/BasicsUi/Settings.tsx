@@ -77,7 +77,7 @@ const handlePassword= async()=>{
         </Card>
 
         {/* 🔹 Danger Zone */}
-        <Card className="p-6   border border-red-200 bg-red-50">
+        {/* <Card className="p-6   border border-red-200 bg-red-50">
           <CardContent className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-red-600">
@@ -92,7 +92,7 @@ const handlePassword= async()=>{
               Logout
             </Button>
           </CardContent>
-        </Card>
+        </Card> */}
 
       </div>
     </div>

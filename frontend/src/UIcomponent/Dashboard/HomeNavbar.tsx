@@ -1,5 +1,4 @@
-import { Input } from "@/components/ui/input";
-import {  Menu, Search, Settings, User, Users } from "lucide-react";
+import { Menu, Settings, User, Users } from "lucide-react";
 import {
   Avatar,
   AvatarImage,
@@ -7,79 +6,106 @@ import {
   AvatarBadge,
 } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import HomeSidebar from "./HomeSidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { NavLink } from "react-router-dom";
 import { ROUTES } from "@/Routers/routes";
+import { getProfileApi } from "@/api";
+
+const resolveImageUrl = (value?: string | null) =>
+  value
+    ? value.startsWith("http")
+      ? value
+      : `http://localhost:5000/uploads/${value}`
+    : "";
 
 const HomeNavbar = () => {
   const [sidebar, setSidebar] = useState(false);
   const [profileBar, setprofileBar] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await getProfileApi();
+        setUser(response.data);
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   return (
     <>
       <HomeSidebar open={sidebar} setOpen={setSidebar} />
 
-      <header className="h-16 w-full border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
+      <header className="h-16 w-full border-b bg-white/70 backdrop-blur-xl sticky top-0 z-50 shadow-sm">
         <div className="flex items-center justify-between h-full px-6 max-w-7xl mx-auto">
 
-          {/* LEFT */}
-          <div className="flex items-center gap-3">
+          {/* 🔹 LEFT */}
+          <div className="flex items-center gap-4">
             <Button
               variant="outline"
               size="icon"
-              className="rounded-lg"
+              className="rounded-xl border-gray-200 hover:bg-gray-100 transition"
               onClick={() => setSidebar(true)}
             >
               <Menu size={18} />
             </Button>
 
-            <h1 className="text-lg md:text-xl font-semibold text-gray-800">
-              Village Family Directory
-            </h1>
+            <div className="flex flex-col leading-tight">
+              <h1 className="text-lg md:text-xl font-semibold text-gray-900 tracking-tight">
+                Village Directory
+              </h1>
+              <span className="text-xs text-gray-500">
+                Family Management System
+              </span>
+            </div>
           </div>
 
-          {/* RIGHT (Search + Avatar) */}
+          {/* 🔹 RIGHT */}
           <div className="flex items-center gap-4">
 
-            {/* Search Bar */}
-            <div className="hidden md:block w-[280px]">
-              <Input
-                placeholder="Search members..."
-                className="rounded-xl bg-gray-100 border-none focus-visible:ring-2 focus-visible:ring-blue-500"
-              />
-            </div>
-
             {/* Avatar */}
-            <Avatar className="w-10 h-10 ring-2 ring-gray-200 hover:ring-blue-400 transition"
-              onClick={() => setprofileBar(true)}>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>AN</AvatarFallback>
+            <Avatar
+              className="w-10 h-10 cursor-pointer ring-2 ring-gray-200 hover:ring-blue-400 transition"
+              onClick={() => setprofileBar(true)}
+            >
+              <AvatarImage src={
+                user?.profile_pic
+                  ? resolveImageUrl(user.profile_pic)
+                  : "https://github.com/shadcn.png"
+              } />
+              <AvatarFallback>{user?.full_name ? user.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase() : 'AN'}</AvatarFallback>
               <AvatarBadge className="bg-green-500" />
             </Avatar>
           </div>
 
-          {/* //profile side bar */}
+          {/* 🔹 PROFILE SIDEBAR */}
           <Sheet open={profileBar} onOpenChange={setprofileBar}>
             <SheetContent
               side="right"
-              className="w-60 p-2 bg-cyan-500 text-white mt-16"
+              className="w-64 p-0 mt-16 bg-white shadow-xl"
             >
               {/* HEADER */}
-              <div className="p-4 text-lg font-semibold  border-blue-500">
-                welcome
+              <div className="p-5 border-b">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Welcome, {user?.full_name || 'Anand'} 👋
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Manage your account
+                </p>
               </div>
-              <Separator className="" />
 
               {/* MENU */}
-              <nav className="flex flex-col gap-2 p-4">
+              <nav className="flex flex-col p-3 gap-1 text-sm">
+
                 <NavLink
                   to={ROUTES.PROFILE}
-                  // onClick={}
-                  className="flex items-center gap-3 p-2 rounded hover:bg-blue-500"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition"
                 >
                   <User size={16} />
                   Profile
@@ -87,32 +113,22 @@ const HomeNavbar = () => {
 
                 <NavLink
                   to={ROUTES.SETTING}
-                  // onClick={}
-                  className="flex items-center gap-3 p-2 rounded hover:bg-blue-500"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition"
                 >
                   <Settings size={16} />
-                  Setting
+                  Settings
                 </NavLink>
 
-                <NavLink
-                  to="#"
-                  // onClick={}
-                  className="flex items-center gap-3 p-2 rounded hover:bg-blue-500"
-                >
-                  <Search size={16} />
-                  Search
-                </NavLink>
+                <Separator className="my-2" />
 
                 <NavLink
                   to={ROUTES.ADD_MEMBERS}
-                  // onClick={}
-                  className="flex items-center gap-3 p-2 rounded hover:bg-blue-500"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 text-blue-600 font-medium transition"
                 >
                   <Users size={16} />
-                  Add user
+                  Add Member
                 </NavLink>
               </nav>
-              {/* <Separator /> */}
             </SheetContent>
           </Sheet>
         </div>

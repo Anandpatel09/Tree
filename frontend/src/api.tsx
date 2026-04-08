@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { FormValues } from "./UIcomponent/BasicsUi/Addmembers";
+// import type { FormValues } from "./UIcomponent/BasicsUi/Addmembers";
 
 export interface SignupResponse {
   success: boolean;
@@ -92,17 +92,17 @@ export const getProfileApi = () => {
 };
 
 //add members
-export const addUsers = (payload: FormValues) => {
-  return BaseUrl.post("/auth/add-members", payload);
+export const addUsers = (payload: FormData) => {
+  return BaseUrl.post("/auth/add-members", payload, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
 
 // update profile
 export const updateUser = (id: number, payload: any) => {
-  return BaseUrl.patch(`/auth/profile/${id}`, payload, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return BaseUrl.put(`/auth/update/${id}`, payload);
 };
 
 // update password 

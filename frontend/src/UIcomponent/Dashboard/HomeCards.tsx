@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, User, Calendar } from "lucide-react";
+import { Users,  Calendar } from "lucide-react";
 import type { FamilyData } from "./Home";
 
 
@@ -8,7 +8,7 @@ interface Props {
 }
 const HomeCards = ({familyData}:Props) => {
   return (
-    <div className="flex justify-between gap-6 p-6">
+    <div className="flex justify-around gap-6 p-6">
 
       {/* Total Families */}
       <Card className="w-64 shadow-md border-b-4 border-blue-500">
@@ -22,7 +22,7 @@ const HomeCards = ({familyData}:Props) => {
       </Card>
 
       {/* Total Members */}
-      <Card className="w-64 shadow-md border-b-4 border-blue-500">
+      {/* <Card className="w-64 shadow-md border-b-4 border-blue-500">
         <CardContent className="flex justify-between items-center p-4">
           <div>
             <p className="text-sm text-gray-500">Total Members</p>
@@ -30,7 +30,7 @@ const HomeCards = ({familyData}:Props) => {
           </div>
           <User className="text-green-600" size={28} />
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* New This Month */}
       <Card className="w-64 shadow-md border-b-4 border-orange-400">
