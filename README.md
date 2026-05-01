@@ -17,7 +17,7 @@ The **Family Tree Project** is a web-based application that allows users to visu
 
 ---
 
-##  Tech Stack
+##  TechStack
 
 **Frontend:**
 
